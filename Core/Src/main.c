@@ -106,6 +106,7 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  // Device_Index: LF, LH, RF, RH
   strcpy(Device_Index, "LF");
  
 
