@@ -1,0 +1,64 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "CMake Configure",
+			"command": "cmake",
+			"group": {
+                "kind": "build",
+                "isDefault": true
+            },
+			"args": [
+				"-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
+				"-GNinja",
+				"-Bbuild"
+			]
+		},
+		{
+			"type": "shell",
+			"label": "CMake Build",
+			"command": "cmake",
+			"group": {
+                "kind": "build",
+                "isDefault": true
+            },
+			"args": [
+				"--build",
+				"build",
+				"--target",
+				"all"
+			]
+		},
+		{
+			"type": "shell",
+            "label": "Flash",
+            "command": "openocd",
+			"args": [
+				"-f",
+				"interface/stlink-v2.cfg",
+				"-f",
+				"target/stm32f1x.cfg",
+				"-c",
+				"program ./build/Pressure_TR.elf verify reset exit"
+			],
+            "group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+            "label": "clean & build & full",
+            "command": "cmake --build . --clean-first",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "group": "build",
+            "problemMatcher": {
+                "base": "$gcc", 
+                "fileLocation": ["relative", "${workspaceFolder}/build"]
+            }
+		}		
+	]
+}
