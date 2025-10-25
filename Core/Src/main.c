@@ -106,20 +106,41 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  /***********************************************************************
+                  Related Variable Descriptions:
+  1. Device_Index: 
+        Device ID, used for signal acquisition at the four leg terminals.
+        Change the relevant device index for signal acquisition on different limbs.
+        For example, when capturing the left front leg, use "strcpy(Device_Index, "LF");"
+        -- Device_Index: LF, LH, RF, RH
+  
+  2. UART_1: 
+        For transmitting sensor signals (200Hz).
+        -- UART_1: TX --> PA_9
+  
+  3. UART_3: 
+        For receiving sensor signals.
+        -- UART_1: RX --> PB_11
+  
+  4. ADC1_IN1:
+        For collecting analog signals from sensors.
+        -- ADC1_IN0 --> PA_0
+  ************************************************************************/
+
   // Device_Index: LF, LH, RF, RH
   strcpy(Device_Index, "LF");
- 
+  
 
-  // 开启TIM3定时器中断
+  // Enable TIM3 timer interrupt
   HAL_TIM_Base_Start_IT(&htim3);
 
-  // 开启串口1和串口3的空闲接收中断
-  HAL_UART_Receive_DMA(&huart1, UsartType1.usartDMA_rxBuf, RECEIVELEN); //串口1 DMA
+  // Enable idle receive interrupts for uart_1 and uart_3
+  HAL_UART_Receive_DMA(&huart1, UsartType1.usartDMA_rxBuf, RECEIVELEN); // UART_1 DMA
   __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-  HAL_UART_Receive_DMA(&huart3, UsartType3.usartDMA_rxBuf, RECEIVELEN); //串口3 DMA
+  HAL_UART_Receive_DMA(&huart3, UsartType3.usartDMA_rxBuf, RECEIVELEN); // UART_3 DMA
   __HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE);
 
-  // 开启ADC IN1 的采样（DMA采样） (ADC1_IN1 --> PA_1)
+  // Enable ADC IN0 sampling (DMA sampling) (ADC1_IN0 --> PA_0)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_buf, 1);
 
   /* USER CODE END 2 */
